@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using MySql.Data.MySqlClient;
+using System.Data;
+namespace WebApplication1
+{
+public partial class login_page : System.Web.UI.Page
+{
+protected void Page_Load(object sender, EventArgs e)
+{
+Session["name"] = null;
+}
+protected void Button3_Click(object sender, EventArgs e)
+{
+if (TextBox1.Text == "" || TextBox2.Text == "")
+{
+Label1.Text = "please enter valid details";
+}
+else
+{
+String constar =
+"datasource=localhost;port=3306;database=project;username=root;password=root;Pooling=fals
+e;";
+MySqlConnection con;
+con = new MySqlConnection(constar);
+con.Open();
+DataSet ds = new DataSet();
+MySqlDataAdapter mda = new MySqlDataAdapter("select * from registration
+where name ='" + TextBox1.Text + "' and password='" + TextBox2.Text + "'", con);
+mda.Fill(ds, "registration");
+DataTable dt = new DataTable();
+dt = ds.Tables[0];
+if (dt.Rows.Count > 0)
+{
+Session["name"] = TextBox1.Text;
+Response.Redirect("Form_1.aspx");
+}
+else
+{
+Label1.Text = "Invalid details";
+}
+}
+}
+}
+}

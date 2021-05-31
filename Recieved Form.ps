@@ -1,0 +1,172 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using MySql.Data.MySqlClient;
+using System.Data;
+namespace WebApplication1
+{
+public partial class WebForm1 : System.Web.UI.Page
+{
+protected void Page_Load(object sender, EventArgs e)
+{
+getrecords();
+if (Session["name"] == null)
+{
+Response.Redirect("login_page.aspx");
+}
+else
+{
+Label1.Text = Session["name"].ToString();
+}
+}
+void getrecords()
+{
+string constar =
+"datasource=localhost;port=3306;database=project;username=root;password=root;Pooling=fals
+e;";
+MySqlConnection con;
+con = new MySqlConnection(constar);
+con.Open();
+DataSet ab = new DataSet();
+MySqlDataAdapter bb = new MySqlDataAdapter("SELECT *FROM f_recieved", con);
+bb.Fill(ab, "f_recieved");
+GridView1.DataSource = ab;
+GridView1.DataBind();
+}
+protected void Button1_Click1(object sender, EventArgs e)
+{
+if (TextBox1.Text == "")
+{
+Label1.Text = "please enter all data feilds to save it...";
+}
+else
+
+{
+string constar = "datasource=localhost; port=3306; database=project;
+username=root; password= root; Pooling= false; ";
+MySqlConnection con;
+con = new MySqlConnection(constar);
+con.Open();
+bool flag = false;
+MySqlCommand comm = con.CreateCommand();
+comm.CommandText = "INSERT INTO f_recieved
+(name,workout,fees_mode,amount,date) values (@nm,@wk,@fm,@amt,@dt)";
+comm.Parameters.AddWithValue("@nm", TextBox2.Text);
+comm.Parameters.AddWithValue("@wk", DropDownList1.Text);
+comm.Parameters.AddWithValue("@fm", DropDownList2.Text);
+comm.Parameters.AddWithValue("@amt", TextBox5.Text);
+comm.Parameters.AddWithValue("@dt", TextBox6.Text);
+var no = comm.ExecuteNonQuery();
+flag = no == 1 ? true : false;
+if (flag == true)
+{
+Label1.Text = "Record Saved";
+}
+else
+{
+Label1.Text = "Unable to Save";
+}
+}
+getrecords();
+TextBox1.Text = " ";
+TextBox2.Text = " ";
+TextBox5.Text = " ";
+TextBox6.Text = " ";
+DropDownList2.Text = "0";
+DropDownList1.Text = "0";
+}
+protected void Button2_Click(object sender, EventArgs e)
+{
+if (TextBox1.Text == " " )
+{
+Label1.Text = "please search the reg no to delete";
+}
+else
+{
+string constar =
+"datasource=localhost;port=3306;database=project;username=root;password=root;Pooling=fals
+e;";
+MySqlConnection con;
+bool flag = false;
+con = new MySqlConnection(constar);
+MySqlCommand incmd = new MySqlCommand("DELETE FROM f_recieved WHERE
+reg_no=" + TextBox1.Text + "", con);
+con.Open();
+var no = incmd.ExecuteNonQuery();
+con.Close();
+flag = no == 1 ? true : false;
+
+if (flag == true)
+{
+Label1.Text = "Record Removed";
+}
+else
+{
+Label1.Text = "Unable to Remove";
+}
+Label1.Text = " ";
+TextBox1.Text = " ";
+TextBox2.Text = " ";
+DropDownList2.Text = "0";
+DropDownList1.Text = "0";
+TextBox5.Text = " ";
+TextBox6.Text = " ";
+getrecords();
+}
+}
+protected void Button3_Click(object sender, EventArgs e)
+{
+if (TextBox1.Text == "" )
+{
+Label1.Text = "please enter reg no and update data";
+}
+else
+{
+if (TextBox1.Text == "" || TextBox2.Text == "")
+{
+Label1.Text = "please enter valid details";
+}
+else
+{
+string constar =
+"datasource=localhost;port=3306;database=project;username=root;password=root;Pooling=fals
+e;";
+MySqlConnection con;
+con = new MySqlConnection(constar);
+con.Open();
+bool flag = false;
+MySqlCommand comm = con.CreateCommand();
+comm.CommandText = "UPDATE f_recieved SET
+name=@nm,workout=@wk,fees_mode=@fm,date=@dt, amount=@amt WHERE Reg_no=" + TextBox1.Text +
+" ";
+comm.Parameters.AddWithValue("@nm", TextBox2.Text);
+comm.Parameters.AddWithValue("@wk", DropDownList1.Text);
+comm.Parameters.AddWithValue("@fm", DropDownList2.Text);
+comm.Parameters.AddWithValue("@amt", TextBox5.Text);
+comm.Parameters.AddWithValue("@dt", TextBox6.Text);
+var not = comm.ExecuteNonQuery();
+flag = not == 1 ? true : false;
+if (flag == true)
+{
+Label1.Text = "Record Updated";
+}
+else
+
+{
+Label1.Text = "Unable to update";
+}
+TextBox1.Text = " ";
+TextBox2.Text = " ";
+TextBox5.Text = " ";
+TextBox6.Text = " ";
+DropDownList2.Text = "0";
+DropDownList1.Text = "0";
+getrecords();
+}
+}
+}
+}
+}

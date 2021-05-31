@@ -1,0 +1,191 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using MySql.Data.MySqlClient;
+using System.Data;
+namespace WebApplication1
+{
+public partial class Add_member : System.Web.UI.Page
+{
+protected void Page_Load(object sender, EventArgs e)
+{
+getrecords();
+if (Session["name"] == null)
+{
+Response.Redirect("login_page.aspx");
+}
+else
+{
+Label1.Text = Session["name"].ToString();
+}
+}
+void getrecords()
+{
+string constar =
+"datasource=localhost;port=3306;database=project;username=root;password=root;Pooling=fals
+e;";
+MySqlConnection con;
+con = new MySqlConnection(constar);
+con.Open();
+DataSet ab= new DataSet();
+MySqlDataAdapter bb = new MySqlDataAdapter("SELECT *FROM add_member", con);
+bb.Fill(ab, "add_member");
+GridView1.DataSource = ab;
+GridView1.DataBind();
+}
+protected void Button2_Click(object sender, EventArgs e)
+{
+if (TextBox1.Text == "" || TextBox3.Text == "")
+{
+Label1.Text = "please enter all data feilds to save it...";
+}
+else
+{
+string constar = "datasource=localhost; port=3306; database=project;
+username=root; password= root; Pooling= false; ";
+MySqlConnection con;
+
+con = new MySqlConnection(constar);
+con.Open();
+bool flag = false;
+MySqlCommand comm = con.CreateCommand();
+comm.CommandText = "INSERT INTO add_member
+(Name,Weight,Age,Timing,Gender,Workout,Fees_mode,Mobile_no,Height,Joining_date) values
+(@nm,@wg,@ag,@tn,@gd,@wk,@fm,@mn,@ht,@jd)";
+comm.Parameters.AddWithValue("@nm", TextBox1.Text);
+comm.Parameters.AddWithValue("@wg", TextBox3.Text);
+comm.Parameters.AddWithValue("@ag", TextBox4.Text);
+comm.Parameters.AddWithValue("@tn", DropDownList4.Text);
+comm.Parameters.AddWithValue("@gd", DropDownList2.Text);
+comm.Parameters.AddWithValue("@wk", DropDownList3.Text);
+comm.Parameters.AddWithValue("@fm", DropDownList1.Text);
+comm.Parameters.AddWithValue("@mn", TextBox8.Text);
+comm.Parameters.AddWithValue("@ht", TextBox10.Text);
+comm.Parameters.AddWithValue("@jd", TextBox9.Text);
+var no = comm.ExecuteNonQuery();
+flag = no == 1 ? true : false;
+if (flag == true)
+{
+Label1.Text = "Record Saved";
+}
+else
+{
+Label1.Text = "Unable to Save";
+}
+}
+TextBox1.Text = " ";
+TextBox3.Text = " ";
+TextBox4.Text = " ";
+DropDownList4.Text = " ";
+DropDownList3.Text = " ";
+DropDownList2.Text = " ";
+DropDownList1.Text = " ";
+TextBox8.Text = " ";
+TextBox9.Text = " ";
+TextBox10.Text = " ";
+getrecords();
+}
+protected void TextBox2_TextChanged(object sender, EventArgs e)
+{
+}
+protected void Button4_Click(object sender, EventArgs e)
+{
+if (TextBox1.Text == "" || TextBox3.Text == "")
+{
+Label1.Text = "please enter reg no and update data";
+}
+else
+{
+string constar =
+"datasource=localhost;port=3306;database=project;username=root;password=root;Pooling=fals
+e;";
+
+MySqlConnection con;
+con = new MySqlConnection(constar);
+con.Open();
+bool flag = false;
+MySqlCommand comm = con.CreateCommand();
+comm.CommandText = "UPDATE add_member SET
+Name=@nm,Weight=@wg,Age=@ag,Timing=@tn,Gender=@gd,Workout=@wk,Fees_mode=@fm,Mobile_no=@mn
+,Height=@ht,Joining_date=@jd WHERE Reg_no=" + TextBox7.Text + " ";
+comm.Parameters.AddWithValue("@nm", TextBox1.Text);
+comm.Parameters.AddWithValue("@wg", TextBox3.Text);
+comm.Parameters.AddWithValue("@ag", TextBox4.Text);
+comm.Parameters.AddWithValue("@tn", DropDownList4.Text);
+comm.Parameters.AddWithValue("@gd", DropDownList2.Text);
+comm.Parameters.AddWithValue("@wk", DropDownList3.Text);
+comm.Parameters.AddWithValue("@fm", DropDownList1.Text);
+comm.Parameters.AddWithValue("@mn", TextBox8.Text);
+comm.Parameters.AddWithValue("@ht", TextBox10.Text);
+comm.Parameters.AddWithValue("@jd", TextBox9.Text);
+var not = comm.ExecuteNonQuery();
+flag = not == 1 ? true : false;
+if (flag == true)
+{
+Label1.Text = "Record Updated";
+}
+else
+{
+Label1.Text = "Unable to update";
+}
+TextBox1.Text = " ";
+TextBox3.Text = " ";
+TextBox4.Text = " ";
+DropDownList4.Text = " ";
+DropDownList3.Text = " ";
+DropDownList2.Text = " ";
+DropDownList1.Text = " ";
+TextBox8.Text = " ";
+TextBox9.Text = " ";
+TextBox10.Text = " ";
+getrecords();
+}
+}
+protected void Button3_Click(object sender, EventArgs e)
+{
+if (TextBox7.Text == "" )
+{
+Label1.Text = "please search the reg no to delete";
+}
+else
+{
+string constar =
+"datasource=localhost;port=3306;database=project;username=root;password=root;Pooling=fals
+e;";
+MySqlConnection con;
+bool flag = false;
+con = new MySqlConnection(constar);
+
+MySqlCommand incmd = new MySqlCommand("DELETE FROM add_member WHERE
+reg_no=" + TextBox7.Text + "", con);
+con.Open();
+var no = incmd.ExecuteNonQuery();
+con.Close();
+flag = no == 1 ? true : false;
+if (flag == true)
+{
+Label1.Text = "Record Removed";
+}
+else
+{
+Label1.Text = "Unable to Remove";
+}
+Label1.Text = " ";
+getrecords();
+TextBox1.Text = " ";
+TextBox3.Text = " ";
+TextBox4.Text = " ";
+DropDownList4.Text = " ";
+DropDownList3.Text = " ";
+DropDownList2.Text = " ";
+DropDownList1.Text = " ";
+TextBox8.Text = " ";
+TextBox9.Text = " ";
+TextBox10.Text = " ";
+}
+}
+}
+}

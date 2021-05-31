@@ -1,0 +1,191 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using MySql.Data.MySqlClient;
+using System.Data;
+namespace WebApplication1
+{
+public partial class Purchase_product : System.Web.UI.Page
+{
+protected void Page_Load(object sender, EventArgs e)
+{
+getrecords();
+if (Session["name"] == null)
+{
+Response.Redirect("login_page.aspx");
+}
+else
+{
+Label1.Text = Session["name"].ToString();
+}
+}
+void getrecords()
+{
+string constar =
+"datasource=localhost;port=3306;database=project;username=root;password=root;Pooling=fals
+e;";
+MySqlConnection con;
+con = new MySqlConnection(constar);
+con.Open();
+DataSet aa = new DataSet();
+MySqlDataAdapter bbb = new MySqlDataAdapter("SELECT *FROM purchase_product",
+con);
+bbb.Fill(aa, "purchase_product");
+GridView1.DataSource = aa;
+GridView1.DataBind();
+}
+protected void Button1_Click(object sender, EventArgs e)
+{
+if (TextBox5.Text == "" || TextBox2.Text == "")
+
+{
+Label1.Text = "please enter the data to save it... ";
+}
+else
+{
+string constar = "datasource=localhost; port=3306; database=project;
+username=root; password= root; Pooling= false; ";
+MySqlConnection con;
+con = new MySqlConnection(constar);
+con.Open();
+bool flag = false;
+MySqlCommand comm = con.CreateCommand();
+comm.CommandText = "INSERT INTO
+purchase_product(product_name,quantity,product_rate,total_amount,description,date)values(
+@pn,@qty,@pr,@ttl,@desc,@dt)";
+comm.Parameters.AddWithValue("@pn", DropDownList1.Text);
+comm.Parameters.AddWithValue("@qty", TextBox2.Text);
+comm.Parameters.AddWithValue("@pr", TextBox3.Text);
+comm.Parameters.AddWithValue("@ttl", TextBox4.Text);
+comm.Parameters.AddWithValue("@desc", TextBox6.Text);
+comm.Parameters.AddWithValue("@dt", TextBox5.Text);
+var no = comm.ExecuteNonQuery();
+flag = no == 1 ? true : false;
+if (flag == true)
+{
+Label1.Text = "Record Saved";
+}
+else
+{
+Label1.Text = "Unable to Save";
+}
+TextBox7.Text = "";
+TextBox5.Text = "";
+TextBox2.Text = "";
+TextBox6.Text = "";
+TextBox3.Text = "";
+TextBox4.Text = "";
+DropDownList1.Text = "0";
+getrecords();
+}
+}
+protected void TextBox4_TextChanged(object sender, EventArgs e)
+{
+}
+protected void Button5_Click(object sender, EventArgs e)
+{
+int n = Int32.Parse(TextBox2.Text);
+int m = Int32.Parse(TextBox3.Text);
+int a;
+a = n * m;
+
+TextBox4.Text = a.ToString();
+}
+protected void Button2_Click(object sender, EventArgs e)
+{
+if (TextBox7.Text == "" )
+{
+Label1.Text = "please enter valid reg no to delete";
+}
+else
+{
+string constar =
+"datasource=localhost;port=3306;database=project;username=root;password=root;Pooling=fals
+e;";
+MySqlConnection con;
+bool flag = false;
+con = new MySqlConnection(constar);
+MySqlCommand incmd = new MySqlCommand("DELETE FROM purchase_product WHERE
+reg_no=" + TextBox7.Text + "", con);
+con.Open();
+var no = incmd.ExecuteNonQuery();
+con.Close();
+flag = no == 1 ? true : false;
+if (flag == true)
+{
+Label1.Text = "Record Removed";
+}
+else
+{
+Label1.Text = "Unable to Remove";
+}
+Label1.Text = " ";
+getrecords();
+TextBox2.Text = "";
+TextBox5.Text = "";
+TextBox3.Text = "";
+TextBox4.Text = "";
+TextBox6.Text = "";
+TextBox7.Text = "";
+DropDownList1.Text = "0";
+}
+}
+protected void Button3_Click(object sender, EventArgs e)
+{
+if (TextBox5.Text == "" || TextBox2.Text == "")
+{
+Label1.Text = "please enter reg no and update data";
+}
+else
+{
+
+string constar =
+"datasource=localhost;port=3306;database=project;username=root;password=root;Pooling=fals
+e;";
+MySqlConnection con;
+con = new MySqlConnection(constar);
+con.Open();
+bool flag = false;
+MySqlCommand comm = con.CreateCommand();
+comm.CommandText = "UPDATE purchase_product SET
+product_name=@pn,quantity=@qty,
+product_rate=@pr,total_amount=@ttl,description=@desc,date=@dt WHERE reg_no=" +
+TextBox7.Text + " ";
+comm.Parameters.AddWithValue("@rn", TextBox7.Text);
+comm.Parameters.AddWithValue("@pn", DropDownList1.Text);
+comm.Parameters.AddWithValue("@qty", TextBox2.Text);
+comm.Parameters.AddWithValue("@pr", TextBox3.Text);
+comm.Parameters.AddWithValue("@ttl", TextBox4.Text);
+comm.Parameters.AddWithValue("@desc", TextBox6.Text);
+comm.Parameters.AddWithValue("@dt", TextBox5.Text);
+var no = comm.ExecuteNonQuery();
+flag = no == 1 ? true : false;
+if (flag == true)
+{
+Label1.Text = "Record Updated";
+}
+else
+{
+Label1.Text = "Unable to update";
+}
+getrecords();
+TextBox7.Text = "";
+TextBox5.Text = "";
+TextBox6.Text = "";
+TextBox2.Text = "";
+TextBox3.Text = "";
+TextBox4.Text = "";
+DropDownList1.Text = "0";
+}
+}
+protected void Button4_Click(object sender, EventArgs e)
+{
+}
+protected void TextBox6_TextChanged(object sender, EventArgs e)
+{
+}
+}
+}
